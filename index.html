@@ -1,0 +1,902 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Auctologue Presentation</title>
+    <link href="https://fonts.googleapis.com/css2?family=Sora:wght@400;600;700&display=swap" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        :root {
+            --navy: #0B1B35;
+            --purple: #6B4BFF;
+            --pink: #FF8FE5;
+            --light-blue: #8FE7FF;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Sora', sans-serif;
+            background: var(--navy);
+            color: white;
+            overflow: hidden;
+        }
+
+        .slide-container {
+            width: 100vw;
+            height: 100vh;
+            display: flex;
+            transition: transform 0.5s ease;
+        }
+
+        .slide {
+            min-width: 100vw;
+            height: 100vh;
+            padding: 2rem;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .slide::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle at center, var(--purple) 0%, transparent 70%);
+            opacity: 0.1;
+            z-index: -1;
+        }
+
+        h1 {
+            font-size: 3.5rem;
+            margin-bottom: 1rem;
+            background: linear-gradient(135deg, var(--light-blue), var(--pink));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        h2 {
+            font-size: 2rem;
+            margin-bottom: 1.5rem;
+            color: var(--light-blue);
+        }
+
+        .content {
+            max-width: 1200px;
+            margin: 0 auto;
+            width: 100%;
+        }
+
+        .team-members {
+            display: flex;
+            gap: 2rem;
+            margin-top: 2rem;
+        }
+
+        .team-member {
+            background: rgba(255, 255, 255, 0.1);
+            padding: 1rem;
+            border-radius: 8px;
+            flex: 1;
+        }
+
+        .chart-container {
+            width: 100%;
+            max-width: 800px;
+            margin: 2rem auto;
+            height: 400px;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 8px;
+            padding: 1rem;
+        }
+
+        .metrics-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1.5rem;
+            margin: 2rem 0;
+        }
+
+        .metric-card {
+            background: rgba(255, 255, 255, 0.1);
+            padding: 1.5rem;
+            border-radius: 8px;
+            text-align: center;
+        }
+
+        .metric-value {
+            font-size: 2.5rem;
+            font-weight: bold;
+            color: var(--pink);
+            margin: 0.5rem 0;
+        }
+
+        .metric-label {
+            color: var(--light-blue);
+            font-size: 1rem;
+        }
+
+        .cta {
+            position: absolute;
+            bottom: 2rem;
+            left: 50%;
+            transform: translateX(-50%);
+            font-size: 1.2rem;
+            color: var(--pink);
+            text-align: center;
+            width: 100%;
+        }
+
+        .navigation {
+            position: fixed;
+            bottom: 2rem;
+            right: 2rem;
+            display: flex;
+            gap: 1rem;
+            z-index: 100;
+        }
+
+        .nav-btn {
+            background: rgba(255, 255, 255, 0.2);
+            border: none;
+            color: white;
+            padding: 0.5rem 1rem;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: background 0.3s ease;
+        }
+
+        .nav-btn:hover {
+            background: rgba(255, 255, 255, 0.3);
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 2rem 0;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 8px;
+            overflow: hidden;
+        }
+
+        th, td {
+            padding: 1rem;
+            text-align: left;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        th {
+            color: var(--light-blue);
+            background: rgba(255, 255, 255, 0.05);
+        }
+
+        .feature-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 2rem;
+            margin: 2rem 0;
+        }
+
+        .feature-card {
+            background: rgba(255, 255, 255, 0.1);
+            padding: 1.5rem;
+            border-radius: 8px;
+        }
+
+        .feature-card h3 {
+            color: var(--light-blue);
+            margin-bottom: 1rem;
+        }
+
+        .workflow-comparison {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 2rem;
+            margin: 2rem 0;
+        }
+
+        .workflow-step {
+            background: rgba(255, 255, 255, 0.1);
+            padding: 1rem;
+            border-radius: 8px;
+            margin-bottom: 1rem;
+            position: relative;
+        }
+
+        .workflow-step::after {
+            content: '↓';
+            position: absolute;
+            bottom: -1.5rem;
+            left: 50%;
+            transform: translateX(-50%);
+            color: var(--pink);
+        }
+
+        .workflow-step:last-child::after {
+            display: none;
+        }
+
+        .subtitle {
+            font-size: 1.5rem;
+            margin-bottom: 2rem;
+            color: rgba(255, 255, 255, 0.8);
+        }
+
+        .highlight {
+            color: var(--pink);
+            font-weight: bold;
+        }
+
+        .slide-number {
+            position: absolute;
+            top: 2rem;
+            right: 2rem;
+            font-size: 1rem;
+            color: rgba(255, 255, 255, 0.5);
+        }
+    </style>
+</head>
+<body>
+    <div class="slide-container">
+        <!-- Slide 1: Title -->
+        <div class="slide" id="slide1">
+            <div class="content">
+                <h1>Auctologue</h1>
+                <h2>Smart Cataloging for Secondhand Markets</h2>
+                <p class="subtitle">Speed Meets Accuracy. AI for Real Sellers.</p>
+                <div class="team-members">
+                    <div class="team-member">
+                        <h3>Max</h3>
+                        <p>Product/Engineering</p>
+                    </div>
+                    <div class="team-member">
+                        <h3>Reika</h3>
+                        <p>UX/Design</p>
+                    </div>
+                    <div class="team-member">
+                        <h3>Sanskar</h3>
+                        <p>Data/AI</p>
+                    </div>
+                    <div class="team-member">
+                        <h3>Felix</h3>
+                        <p>Marketing</p>
+                    </div>
+                    <div class="team-member">
+                        <h3>Amberleigh</h3>
+                        <p>Founder, Auctioneer, Team Lead</p>
+                    </div>
+                </div>
+                <p class="cta">Meet the team building faster, smarter resale.</p>
+            </div>
+            <div class="slide-number">1/9</div>
+        </div>
+
+        <!-- Slide 2: Stakeholder Metrics -->
+        <div class="slide" id="slide2">
+            <div class="content">
+                <h2>Stakeholder Metrics & Real-World Impact</h2>
+                <div class="metrics-grid">
+                    <div class="metric-card">
+                        <div class="metric-value">41,600</div>
+                        <div class="metric-label">Hours Saved/Year (Yr 3)</div>
+                    </div>
+                    <div class="metric-card">
+                        <div class="metric-value">$832K</div>
+                        <div class="metric-label">Labor Savings/Year (Yr 3)</div>
+                    </div>
+                    <div class="metric-card">
+                        <div class="metric-value">$78K</div>
+                        <div class="metric-label">Additional Revenue (5% uplift)</div>
+                    </div>
+                    <div class="metric-card">
+                        <div class="metric-value">>99%</div>
+                        <div class="metric-label">Uptime</div>
+                    </div>
+                </div>
+                <div class="chart-container">
+                    <canvas id="revenueChart"></canvas>
+                </div>
+                <p class="cta">Invest in a product already saving thousands of hours.</p>
+            </div>
+            <div class="slide-number">2/9</div>
+        </div>
+
+        <!-- Slide 3: Market Profile -->
+        <div class="slide" id="slide3">
+            <div class="content">
+                <h2>Market Profile & Competitive Landscape</h2>
+                <div class="metrics-grid">
+                    <div class="metric-card">
+                        <div class="metric-value">$30.6B</div>
+                        <div class="metric-label">Global Resale Market</div>
+                    </div>
+                    <div class="metric-card">
+                        <div class="metric-value">$400M</div>
+                        <div class="metric-label">Total Addressable Market</div>
+                    </div>
+                    <div class="metric-card">
+                        <div class="metric-value">$140M</div>
+                        <div class="metric-label">Serviceable Available Market</div>
+                    </div>
+                    <div class="metric-card">
+                        <div class="metric-value">$7M</div>
+                        <div class="metric-label">Serviceable Obtainable Market</div>
+                    </div>
+                </div>
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 2rem; margin: 2rem 0;">
+                    <div class="chart-container" style="margin: 0; height: 300px;">
+                        <canvas id="competitorChart"></canvas>
+                    </div>
+                    <div class="feature-card" style="height: 300px; display: flex; flex-direction: column; justify-content: flex-start; padding: 1rem;">
+                        <h3 style="margin-bottom: 0.5rem; font-size: 1.1rem;">Current Competitors</h3>
+                        <ul style="list-style: none; margin: 0; padding: 0;">
+                            <li style="margin-bottom: 0.75rem;">
+                                <span class="highlight" style="font-size: 0.9rem;">AuctionWriter</span>
+                                <p style="color: rgba(255, 255, 255, 0.7); font-size: 0.8rem; margin: 0.25rem 0;">Amazon/eBay focused</p>
+                            </li>
+                            <li style="margin-bottom: 0.75rem;">
+                                <span class="highlight" style="font-size: 0.9rem;">AICataloguer</span>
+                                <p style="color: rgba(255, 255, 255, 0.7); font-size: 0.8rem; margin: 0.25rem 0;">Basic listing automation</p>
+                            </li>
+                            <li style="margin-bottom: 0.75rem;">
+                                <span class="highlight" style="font-size: 0.9rem;">Listernaut</span>
+                                <p style="color: rgba(255, 255, 255, 0.7); font-size: 0.8rem; margin: 0.25rem 0;">Generic marketplace tool</p>
+                            </li>
+                        </ul>
+                        <p style="margin: 0.75rem 0 0.5rem 0; color: var(--light-blue); font-size: 0.9rem;">Key Differentiators:</p>
+                        <ul style="list-style: none; margin: 0; padding: 0;">
+                            <li style="color: rgba(255, 255, 255, 0.7); font-size: 0.8rem; margin-bottom: 0.5rem;">✓ Curated descriptions for antiques</li>
+                            <li style="color: rgba(255, 255, 255, 0.7); font-size: 0.8rem; margin-bottom: 0.5rem;">✓ Direct auction platform integration</li>
+                            <li style="color: rgba(255, 255, 255, 0.7); font-size: 0.8rem;">✓ Specialized for high-value items</li>
+                        </ul>
+                    </div>
+                </div>
+                <p class="cta">Join the only AI built for estate and antiques markets.</p>
+            </div>
+            <div class="slide-number">3/9</div>
+        </div>
+
+        <!-- Slide 4: Customer Profile -->
+        <div class="slide" id="slide4">
+            <div class="content">
+                <h2>Customer Profile & Workflow Change</h2>
+                <div class="workflow-comparison">
+                    <div>
+                        <h3>Old Workflow</h3>
+                        <div class="workflow-step">
+                            <h4>Photographer</h4>
+                            <p>Manual image capture and processing</p>
+                        </div>
+                        <div class="workflow-step">
+                            <h4>Researcher</h4>
+                            <p>Time-consuming market analysis</p>
+                        </div>
+                        <div class="workflow-step">
+                            <h4>Writer</h4>
+                            <p>Manual description creation</p>
+                        </div>
+                        <div class="workflow-step">
+                            <h4>QA</h4>
+                            <p>Error-prone review process</p>
+                        </div>
+                    </div>
+                    <div>
+                        <h3>With Auctologue</h3>
+                        <div class="workflow-step">
+                            <h4>Capture</h4>
+                            <p>Quick photo with any device</p>
+                        </div>
+                        <div class="workflow-step">
+                            <h4>AI Analysis</h4>
+                            <p>Instant identification & research</p>
+                        </div>
+                        <div class="workflow-step">
+                            <h4>Auto-Generation</h4>
+                            <p>Professional descriptions in seconds</p>
+                        </div>
+                    </div>
+                </div>
+                <p class="highlight">5+ labor hours saved per 400 items</p>
+                <p class="cta">Eliminate bottlenecks and get to market faster.</p>
+            </div>
+            <div class="slide-number">4/9</div>
+        </div>
+
+        <!-- Slide 5: Customer Journey -->
+        <div class="slide" id="slide5">
+            <div class="content">
+                <h2>Customer Journey & Main Advantage</h2>
+                <div class="workflow-comparison">
+                    <div>
+                        <h3>Before Auctologue</h3>
+                        <div class="workflow-step">
+                            <h4>Manual Process</h4>
+                            <p>Time-consuming research and writing</p>
+                        </div>
+                        <div class="workflow-step">
+                            <h4>Fragmented Tools</h4>
+                            <p>Multiple systems and handoffs</p>
+                        </div>
+                        <div class="workflow-step">
+                            <h4>Expert-Dependent</h4>
+                            <p>Requires specialized knowledge</p>
+                        </div>
+                    </div>
+                    <div>
+                        <h3>With Auctologue</h3>
+                        <div class="workflow-step">
+                            <h4>5× Faster Cataloging</h4>
+                            <p>AI-powered automation</p>
+                        </div>
+                        <div class="workflow-step">
+                            <h4>Clearer Listings</h4>
+                            <p>Fewer disputes, better search</p>
+                        </div>
+                        <div class="workflow-step">
+                            <h4>Zero Learning Curve</h4>
+                            <p>Instant productivity</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="highlight">5+ labor hours saved per 400 items</div>
+                <p class="cta">Transform your listing process in one step.</p>
+            </div>
+            <div class="slide-number">5/9</div>
+        </div>
+
+        <!-- Slide 6: Business Model -->
+        <div class="slide" id="slide6">
+            <div class="content">
+                <h2>Business Model & Unit Economics</h2>
+                <div class="metrics-grid">
+                    <div class="metric-card">
+                        <div class="metric-value">$0.50</div>
+                        <div class="metric-label">Price per Item</div>
+                    </div>
+                    <div class="metric-card">
+                        <div class="metric-value">$3,120</div>
+                        <div class="metric-label">Avg. Revenue/Client/Year</div>
+                    </div>
+                    <div class="metric-card">
+                        <div class="metric-value">$20,800</div>
+                        <div class="metric-label">Avg. Client Savings/Year</div>
+                    </div>
+                    <div class="metric-card">
+                        <div class="metric-value">500</div>
+                        <div class="metric-label">Target Clients (Year 3)</div>
+                    </div>
+                </div>
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 2rem; margin: 2rem 0;">
+                    <div class="chart-container" style="margin: 0;">
+                        <canvas id="revenueProjectionChart"></canvas>
+                    </div>
+                    <div class="chart-container" style="margin: 0;">
+                        <canvas id="savingsProjectionChart"></canvas>
+                    </div>
+                </div>
+                <p class="cta">Scalable margins with compound client value.</p>
+            </div>
+            <div class="slide-number">6/9</div>
+        </div>
+
+        <!-- Slide 7: Competitive Advantage -->
+        <div class="slide" id="slide7">
+            <div class="content">
+                <h2>Competitive Advantage</h2>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Feature</th>
+                            <th>Old Way</th>
+                            <th>Auctologue</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>Time/Item</td>
+                            <td>10 min</td>
+                            <td class="highlight">1.2 min</td>
+                        </tr>
+                        <tr>
+                            <td>Accuracy</td>
+                            <td>Manual, inconsistent</td>
+                            <td class="highlight">AI + Curation</td>
+                        </tr>
+                        <tr>
+                            <td>Training Need</td>
+                            <td>High</td>
+                            <td class="highlight">None</td>
+                        </tr>
+                        <tr>
+                            <td>Cost/Item</td>
+                            <td>~$3.33</td>
+                            <td class="highlight">$0.50</td>
+                        </tr>
+                        <tr>
+                            <td>Scale</td>
+                            <td>Labor-limited</td>
+                            <td class="highlight">SaaS-scalable</td>
+                        </tr>
+                    </tbody>
+                </table>
+                <p class="cta">Let's beat manual processes and generic tools.</p>
+            </div>
+            <div class="slide-number">7/9</div>
+        </div>
+
+        <!-- Slide 8: Stakeholder Roles -->
+        <div class="slide" id="slide8">
+            <div class="content">
+                <h2>Stakeholder Roles</h2>
+                <div class="feature-grid">
+                    <div class="feature-card">
+                        <h3>Internal Stakeholders</h3>
+                        <ul>
+                            <li>Engineers</li>
+                            <li>UX Designers</li>
+                            <li>Data Scientists</li>
+                            <li>Product Managers</li>
+                        </ul>
+                    </div>
+                    <div class="feature-card">
+                        <h3>Enablers</h3>
+                        <ul>
+                            <li>Investors</li>
+                            <li>Finance Department</li>
+                            <li>HR</li>
+                            <li>Pilot Clients</li>
+                        </ul>
+                    </div>
+                    <div class="feature-card">
+                        <h3>Technical Partners</h3>
+                        <ul>
+                            <li>IT Infrastructure Partners</li>
+                            <li>Auction Platform Integrations</li>
+                        </ul>
+                    </div>
+                    <div class="feature-card">
+                        <h3>Success Metrics</h3>
+                        <ul>
+                            <li>Client Adoption Rate</li>
+                            <li>Platform Uptime</li>
+                            <li>AI Accuracy</li>
+                            <li>Client Satisfaction</li>
+                        </ul>
+                    </div>
+                </div>
+                <p class="cta">Every partner here makes launch possible.</p>
+            </div>
+            <div class="slide-number">8/9</div>
+        </div>
+
+        <!-- Slide 9: Call to Action -->
+        <div class="slide" id="slide9">
+            <div class="content">
+                <h2>Join Our Success Story</h2>
+                <div class="metrics-grid">
+                    <div class="metric-card">
+                        <div class="metric-value">5×</div>
+                        <div class="metric-label">Faster Processing</div>
+                    </div>
+                    <div class="metric-card">
+                        <div class="metric-value">$1.56M</div>
+                        <div class="metric-label">Revenue Forecast</div>
+                    </div>
+                    <div class="metric-card">
+                        <div class="metric-value">8000+</div>
+                        <div class="metric-label">Hours Already Saved</div>
+                    </div>
+                </div>
+                <div class="feature-grid">
+                    <div class="feature-card">
+                        <h3>Join Our Pilot</h3>
+                        <p>Be among the first to transform your cataloging process</p>
+                    </div>
+                    <div class="feature-card">
+                        <h3>Fund Our Rollout</h3>
+                        <p>Invest in the future of auction technology</p>
+                    </div>
+                    <div class="feature-card">
+                        <h3>Amplify Our Reach</h3>
+                        <p>Partner with us to reshape the industry</p>
+                    </div>
+                </div>
+                <p class="highlight" style="text-align: center; font-size: 1.5rem; margin-top: 2rem;">
+                    Cataloging shouldn't slow you down.<br>
+                    Auctologue makes it your edge.
+                </p>
+            </div>
+            <div class="slide-number">9/9</div>
+        </div>
+    </div>
+
+    <div class="navigation">
+        <button class="nav-btn" onclick="prevSlide()">Previous</button>
+        <button class="nav-btn" onclick="nextSlide()">Next</button>
+    </div>
+
+    <script>
+        let currentSlide = 0;
+        const slideContainer = document.querySelector('.slide-container');
+        const totalSlides = document.querySelectorAll('.slide').length;
+
+        function updateSlidePosition() {
+            slideContainer.style.transform = `translateX(-${currentSlide * 100}vw)`;
+        }
+
+        function nextSlide() {
+            if (currentSlide < totalSlides - 1) {
+                currentSlide++;
+                updateSlidePosition();
+            }
+        }
+
+        function prevSlide() {
+            if (currentSlide > 0) {
+                currentSlide--;
+                updateSlidePosition();
+            }
+        }
+
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'ArrowRight') nextSlide();
+            if (e.key === 'ArrowLeft') prevSlide();
+        });
+
+        // Revenue Growth Chart
+        const revenueCtx = document.getElementById('revenueChart').getContext('2d');
+        new Chart(revenueCtx, {
+            type: 'bar',
+            data: {
+                labels: ['Year 1', 'Year 2', 'Year 3'],
+                datasets: [{
+                    label: 'Projected Revenue',
+                    data: [312000, 936000, 1560000],
+                    backgroundColor: 'rgba(255, 143, 229, 0.5)',
+                    borderColor: 'rgba(255, 143, 229, 1)',
+                    borderWidth: 1
+                }]
+            },
+            options: {
+                responsive: true,
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        grid: {
+                            color: 'rgba(255, 255, 255, 0.1)'
+                        },
+                        ticks: {
+                            color: 'rgba(255, 255, 255, 0.7)'
+                        }
+                    },
+                    x: {
+                        grid: {
+                            color: 'rgba(255, 255, 255, 0.1)'
+                        },
+                        ticks: {
+                            color: 'rgba(255, 255, 255, 0.7)'
+                        }
+                    }
+                },
+                plugins: {
+                    legend: {
+                        labels: {
+                            color: 'rgba(255, 255, 255, 0.7)'
+                        }
+                    }
+                }
+            }
+        });
+
+        // Competitor Radar Chart
+        const competitorCtx = document.getElementById('competitorChart').getContext('2d');
+        new Chart(competitorCtx, {
+            type: 'radar',
+            data: {
+                labels: ['Auction Integration', 'AI Accuracy', 'Processing Speed', 'Market Coverage', 'Ease of Use'],
+                datasets: [{
+                    label: 'Auctologue',
+                    data: [95, 90, 95, 85, 90],
+                    backgroundColor: 'rgba(255, 143, 229, 0.2)',
+                    borderColor: 'rgba(255, 143, 229, 1)',
+                    pointBackgroundColor: 'rgba(255, 143, 229, 1)',
+                    pointBorderColor: '#fff',
+                    pointHoverBackgroundColor: '#fff',
+                    pointHoverBorderColor: 'rgba(255, 143, 229, 1)'
+                },
+                {
+                    label: 'Competitors Avg.',
+                    data: [60, 70, 65, 55, 75],
+                    backgroundColor: 'rgba(143, 231, 255, 0.2)',
+                    borderColor: 'rgba(143, 231, 255, 1)',
+                    pointBackgroundColor: 'rgba(143, 231, 255, 1)',
+                    pointBorderColor: '#fff',
+                    pointHoverBackgroundColor: '#fff',
+                    pointHoverBorderColor: 'rgba(143, 231, 255, 1)'
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                scales: {
+                    r: {
+                        grid: {
+                            color: 'rgba(255, 255, 255, 0.1)'
+                        },
+                        ticks: {
+                            color: 'rgba(255, 255, 255, 0.7)',
+                            backdropColor: 'transparent',
+                            maxTicksLimit: 5
+                        },
+                        pointLabels: {
+                            color: 'rgba(255, 255, 255, 0.7)',
+                            font: {
+                                size: 11
+                            }
+                        },
+                        min: 0,
+                        max: 100
+                    }
+                },
+                plugins: {
+                    legend: {
+                        labels: {
+                            color: 'rgba(255, 255, 255, 0.7)',
+                            font: {
+                                size: 12
+                            }
+                        },
+                        position: 'top'
+                    }
+                }
+            }
+        });
+
+        // Revenue Projection Chart
+        const revenueProjectionCtx = document.getElementById('revenueProjectionChart').getContext('2d');
+        new Chart(revenueProjectionCtx, {
+            type: 'line',
+            data: {
+                labels: ['Year 1', 'Year 2', 'Year 3'],
+                datasets: [{
+                    label: 'Revenue Growth',
+                    data: [312000, 936000, 1560000],
+                    borderColor: 'rgba(255, 143, 229, 1)',
+                    backgroundColor: 'rgba(255, 143, 229, 0.1)',
+                    fill: true
+                }]
+            },
+            options: {
+                responsive: true,
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        grid: {
+                            color: 'rgba(255, 255, 255, 0.1)'
+                        },
+                        ticks: {
+                            color: 'rgba(255, 255, 255, 0.7)',
+                            callback: function(value) {
+                                if (value >= 1000000) {
+                                    return '$' + (value / 1000000).toFixed(1) + 'M';
+                                }
+                                if (value >= 1000) {
+                                    return '$' + (value / 1000).toFixed(0) + 'K';
+                                }
+                                return '$' + value;
+                            }
+                        }
+                    },
+                    x: {
+                        grid: {
+                            color: 'rgba(255, 255, 255, 0.1)'
+                        },
+                        ticks: {
+                            color: 'rgba(255, 255, 255, 0.7)'
+                        }
+                    }
+                },
+                plugins: {
+                    legend: {
+                        labels: {
+                            color: 'rgba(255, 255, 255, 0.7)'
+                        }
+                    },
+                    tooltip: {
+                        callbacks: {
+                            label: function(context) {
+                                let value = context.raw;
+                                if (value >= 1000000) {
+                                    return 'Revenue: $' + (value / 1000000).toFixed(2) + 'M';
+                                }
+                                if (value >= 1000) {
+                                    return 'Revenue: $' + (value / 1000).toFixed(1) + 'K';
+                                }
+                                return 'Revenue: $' + value;
+                            }
+                        }
+                    }
+                }
+            }
+        });
+
+        // Client Savings Projection Chart
+        const savingsProjectionCtx = document.getElementById('savingsProjectionChart').getContext('2d');
+        new Chart(savingsProjectionCtx, {
+            type: 'line',
+            data: {
+                labels: ['Year 1', 'Year 2', 'Year 3'],
+                datasets: [{
+                    label: 'Client Savings',
+                    data: [2080000, 6240000, 10400000],
+                    borderColor: 'rgba(143, 231, 255, 1)',
+                    backgroundColor: 'rgba(143, 231, 255, 0.1)',
+                    fill: true
+                }]
+            },
+            options: {
+                responsive: true,
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        grid: {
+                            color: 'rgba(255, 255, 255, 0.1)'
+                        },
+                        ticks: {
+                            color: 'rgba(255, 255, 255, 0.7)',
+                            callback: function(value) {
+                                if (value >= 1000000) {
+                                    return '$' + (value / 1000000).toFixed(1) + 'M';
+                                }
+                                if (value >= 1000) {
+                                    return '$' + (value / 1000).toFixed(0) + 'K';
+                                }
+                                return '$' + value;
+                            }
+                        }
+                    },
+                    x: {
+                        grid: {
+                            color: 'rgba(255, 255, 255, 0.1)'
+                        },
+                        ticks: {
+                            color: 'rgba(255, 255, 255, 0.7)'
+                        }
+                    }
+                },
+                plugins: {
+                    legend: {
+                        labels: {
+                            color: 'rgba(255, 255, 255, 0.7)'
+                        }
+                    },
+                    tooltip: {
+                        callbacks: {
+                            label: function(context) {
+                                let value = context.raw;
+                                if (value >= 1000000) {
+                                    return 'Savings: $' + (value / 1000000).toFixed(2) + 'M';
+                                }
+                                if (value >= 1000) {
+                                    return 'Savings: $' + (value / 1000).toFixed(1) + 'K';
+                                }
+                                return 'Savings: $' + value;
+                            }
+                        }
+                    }
+                }
+            }
+        });
+    </script>
+</body>
+</html> 
