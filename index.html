@@ -281,7 +281,32 @@
             <div class="slide-number">1/9</div>
         </div>
 
-        <!-- Slide 2: Stakeholder Metrics -->
+        <!-- Slide 2: Per-Client Savings -->
+        <div class="slide" id="per-client-savings">
+            <div class="slide-content">
+                <h2>Per-Client Savings Impact</h2>
+                <div class="metrics-grid">
+                    <div class="metric-card">
+                        <h3>Time Saved Per Client</h3>
+                        <div class="metric-value">1,040 hours/year</div>
+                        <p>Based on 6,240 items processed annually</p>
+                    </div>
+                    <div class="metric-card">
+                        <h3>Labor Cost Savings</h3>
+                        <div class="metric-value">$20,800/year</div>
+                        <p>Calculated at $20/hour labor rate</p>
+                    </div>
+                </div>
+                <div class="chart-container" style="height: 300px;">
+                    <canvas id="perClientSavingsChart"></canvas>
+                </div>
+                <div class="call-to-action">
+                    "Each client saves over 80 hours annually with Auctologue"
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 3: Stakeholder Metrics -->
         <div class="slide" id="slide2">
             <div class="content">
                 <h2>Stakeholder Metrics & Real-World Impact</h2>
@@ -311,7 +336,7 @@
             <div class="slide-number">2/9</div>
         </div>
 
-        <!-- Slide 3: Market Profile -->
+        <!-- Slide 4: Market Profile -->
         <div class="slide" id="slide3">
             <div class="content">
                 <h2>Market Profile & Competitive Landscape</h2>
@@ -366,7 +391,7 @@
             <div class="slide-number">3/9</div>
         </div>
 
-        <!-- Slide 4: Customer Profile -->
+        <!-- Slide 5: Customer Profile -->
         <div class="slide" id="slide4">
             <div class="content">
                 <h2>Customer Profile & Workflow Change</h2>
@@ -412,7 +437,7 @@
             <div class="slide-number">4/9</div>
         </div>
 
-        <!-- Slide 5: Customer Journey -->
+        <!-- Slide 6: Customer Journey -->
         <div class="slide" id="slide5">
             <div class="content">
                 <h2>Customer Journey & Main Advantage</h2>
@@ -454,7 +479,7 @@
             <div class="slide-number">5/9</div>
         </div>
 
-        <!-- Slide 6: Business Model -->
+        <!-- Slide 7: Business Model -->
         <div class="slide" id="slide6">
             <div class="content">
                 <h2>Business Model & Unit Economics</h2>
@@ -489,7 +514,7 @@
             <div class="slide-number">6/9</div>
         </div>
 
-        <!-- Slide 7: Competitive Advantage -->
+        <!-- Slide 8: Competitive Advantage -->
         <div class="slide" id="slide7">
             <div class="content">
                 <h2>Competitive Advantage</h2>
@@ -534,7 +559,7 @@
             <div class="slide-number">7/9</div>
         </div>
 
-        <!-- Slide 8: Stakeholder Roles -->
+        <!-- Slide 9: Stakeholder Roles -->
         <div class="slide" id="slide8">
             <div class="content">
                 <h2>Stakeholder Roles</h2>
@@ -579,7 +604,7 @@
             <div class="slide-number">8/9</div>
         </div>
 
-        <!-- Slide 9: Call to Action -->
+        <!-- Slide 10: Call to Action -->
         <div class="slide" id="slide9">
             <div class="content">
                 <h2>Join Our Success Story</h2>
@@ -893,6 +918,50 @@
                                 return 'Savings: $' + value;
                             }
                         }
+                    }
+                }
+            }
+        });
+
+        // Per Client Savings Chart
+        const perClientSavingsCtx = document.getElementById('perClientSavingsChart').getContext('2d');
+        new Chart(perClientSavingsCtx, {
+            type: 'bar',
+            data: {
+                labels: ['Time Saved (hours)', 'Cost Savings ($)'],
+                datasets: [{
+                    label: 'Annual Savings Per Client',
+                    data: [1040, 20800],
+                    backgroundColor: [
+                        'rgba(255, 99, 132, 0.7)',
+                        'rgba(54, 162, 235, 0.7)'
+                    ],
+                    borderColor: [
+                        'rgba(255, 99, 132, 1)',
+                        'rgba(54, 162, 235, 1)'
+                    ],
+                    borderWidth: 1
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        ticks: {
+                            callback: function(value) {
+                                if (value >= 1000) {
+                                    return '$' + (value/1000).toFixed(1) + 'K';
+                                }
+                                return value;
+                            }
+                        }
+                    }
+                },
+                plugins: {
+                    legend: {
+                        display: false
                     }
                 }
             }
